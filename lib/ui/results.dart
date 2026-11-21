@@ -42,11 +42,13 @@ class _ResultsPageState extends State<ResultsPage> {
   @override
   Widget build(BuildContext context) {
     final sessions = widget.store.sessions.reversed.toList();
-    selected ??= sessions.firstOrNull;
+    // The history is trimmed to 20 entries; a selection can fall out of it.
+    if (!sessions.contains(selected)) selected = sessions.firstOrNull;
+    final current = selected;
     return Scaffold(
       appBar: AppBar(title: const Text('Resultados e Gráficos')),
       body: SafeArea(
-        child: sessions.isEmpty
+        child: current == null
             ? const Center(
                 child: Padding(
                   padding: EdgeInsets.all(24),
@@ -105,7 +107,7 @@ class _ResultsPageState extends State<ResultsPage> {
                   const Text(
                     'Arraste para ler cada amostra. A altura é medida em pixels de mundo.',
                   ),
-                  TraceChart(key: ValueKey(selected!.id), session: selected!),
+                  TraceChart(key: ValueKey(current.id), session: current),
                   const SizedBox(height: 24),
                   Wrap(
                     spacing: 16,

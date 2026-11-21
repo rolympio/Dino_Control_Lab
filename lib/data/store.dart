@@ -8,7 +8,16 @@ import '../domain/json_values.dart';
 import 'session.dart';
 
 class AppStore extends ChangeNotifier {
+  /// [preferences] is null when local storage could not be opened; the app
+  /// then runs normally but nothing survives a restart.
   AppStore(this.preferences) {
+    final preferences = this.preferences;
+    if (preferences == null) {
+      _warn(
+        'Armazenamento local indisponível: resultados não serão salvos. Exporte as sessões que quiser manter.',
+      );
+      return;
+    }
     _restore('best', () => best = jsonInt(preferences.get('best'), min: 0));
     _restore('sound', () {
       final value = preferences.get('sound');
@@ -26,7 +35,7 @@ class AppStore extends ChangeNotifier {
       for (final item in history) {
         try {
           sessions.add(Session.fromJson(jsonObject(item)));
-        } on FormatException {
+        } catch (_) {
           _warn('Sessões inválidas foram ignoradas.');
         }
       }
@@ -42,13 +51,13 @@ class AppStore extends ChangeNotifier {
       for (final entry in saved.entries) {
         try {
           experiments[entry.key] = LabConfig.fromJson(jsonObject(entry.value));
-        } on FormatException {
+        } catch (_) {
           _warn('Experimentos inválidos foram ignorados.');
         }
       }
     });
   }
-  final SharedPreferences preferences;
+  final SharedPreferences? preferences;
   LabConfig config = LabConfig();
   int best = 0;
   bool sound = true;
@@ -64,18 +73,30 @@ class AppStore extends ChangeNotifier {
     }
   }
 
+  void dismissNotice() {
+    notice = null;
+    notifyListeners();
+  }
+
   void _restore(String key, void Function() read) {
-    if (!preferences.containsKey(key)) return;
+    if (!(preferences?.containsKey(key) ?? false)) return;
+    // Any failure here would otherwise escape before the first frame
+    // (blank page on web, instant close on Android).
     try {
       read();
-    } on FormatException {
+    } catch (_) {
       _warn('Dados locais inválidos ($key) foram ignorados.');
     }
   }
 
-  Future<void> _write(String key, Future<bool> Function() write) async {
+  Future<void> _write(
+    String key,
+    Future<bool> Function(SharedPreferences) write,
+  ) async {
+    final preferences = this.preferences;
+    if (preferences == null) return;
     try {
-      if (!await write()) throw StateError('Gravação recusada');
+      if (!await write(preferences)) throw StateError('Gravação recusada');
     } catch (_) {
       _warn(
         'Não foi possível salvar $key neste dispositivo. Exporte os dados antes de sair.',
@@ -122,12 +143,12 @@ class AppStore extends ChangeNotifier {
       }
       await _write(
         'sessions',
-        () => preferences.setString(
+        (preferences) => preferences.setString(
           'sessions',
           '[${encoded.reversed.join(',')}]',
         ),
       );
-      await _write('best', () => preferences.setInt('best', best));
+      await _write('best', (preferences) => preferences.setInt('best', best));
     });
   }
 
@@ -137,7 +158,7 @@ class AppStore extends ChangeNotifier {
     return _enqueue(
       () => _write(
         'experiments',
-        () => preferences.setString(
+        (preferences) => preferences.setString(
           'experiments',
           jsonEncode(
             experiments.map((name, config) => MapEntry(name, config.toJson())),
@@ -152,8 +173,14 @@ class AppStore extends ChangeNotifier {
     if (themeMode != null) theme = themeMode;
     notifyListeners();
     return _enqueue(() async {
-      await _write('sound', () => preferences.setBool('sound', sound));
-      await _write('theme', () => preferences.setString('theme', theme.name));
+      await _write(
+        'sound',
+        (preferences) => preferences.setBool('sound', sound),
+      );
+      await _write(
+        'theme',
+        (preferences) => preferences.setString('theme', theme.name),
+      );
     });
   }
 }

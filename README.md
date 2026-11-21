@@ -14,6 +14,8 @@ flutter run
 
 SDK usado na validação: Flutter 3.50.1 / Dart 3.14. Dependências fixadas em pubspec.lock.
 
+Versão web: https://rolympio.github.io/Dino_Control_Lab/ (publicada pelo GitHub Actions depois que o Pages é ativado; veja [DEVELOPMENT.md](docs/DEVELOPMENT.md#web)).
+
 - [Prompt master](docs/PROMPT_MASTER.md)
 - [Arquitetura e unidades físicas](docs/ARCHITECTURE.md)
 - [Compilação, iOS e análise em Python/MATLAB](docs/DEVELOPMENT.md)
@@ -22,4 +24,4 @@ SDK usado na validação: Flutter 3.50.1 / Dart 3.14. Dependências fixadas em p
 
 O Modo Clássico usa Espaço/↑ ou toque para pular, ↓ ou botão mantido para abaixar e P/Esc para pausa. O laboratório permite alterações ao vivo; a semente entra em vigor ao reiniciar.
 
-A aceitação integral permanece pendente de testes manuais nas plataformas. A estrutura iOS foi preparada, mas precisa de macOS/Xcode para compilação. Nenhum push, merge ou release foi realizado.
+A aceitação integral permanece pendente de testes manuais nas plataformas. A estrutura iOS foi preparada, mas precisa de macOS/Xcode para compilação.

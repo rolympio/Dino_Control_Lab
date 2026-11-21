@@ -25,15 +25,37 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
   final audio = AudioPlayer();
   late Timer ticker;
   String? audioError;
+
+  /// Bumped only when something the HUD shows has changed, so the ticker
+  /// does not rebuild the whole page (lab panel included) ten times a second.
+  final hud = ValueNotifier<int>(0);
+  Object? _shown;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     newGame();
     ticker = Timer.periodic(const Duration(milliseconds: 100), (_) {
-      if (mounted) setState(() {});
+      final now = (
+        game,
+        game.sim.score,
+        game.sim.speed.round(),
+        game.sim.crashed,
+        game.userPaused,
+        widget.store.best,
+      );
+      if (now != _shown) {
+        _shown = now;
+        hud.value++;
+      }
     });
   }
+
+  Widget live(WidgetBuilder builder) => ValueListenableBuilder<int>(
+    valueListenable: hud,
+    builder: (context, _, _) => builder(context),
+  );
 
   void newGame() {
     game = DinoGame(
@@ -82,6 +104,7 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
   void dispose() {
     game.finish('encerrada');
     ticker.cancel();
+    hud.dispose();
     focus.dispose();
     unawaited(audio.dispose());
     WidgetsBinding.instance.removeObserver(this);
@@ -122,16 +145,18 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
       children: [
         Padding(
           padding: const EdgeInsets.all(16),
-          child: Wrap(
-            spacing: 24,
-            children: [
-              Text(
-                'Pontos ${game.sim.score}',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              Text('Recorde ${widget.store.best}'),
-              Text('${game.sim.speed.toStringAsFixed(0)} px/s'),
-            ],
+          child: live(
+            (context) => Wrap(
+              spacing: 24,
+              children: [
+                Text(
+                  'Pontos ${game.sim.score}',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                Text('Recorde ${widget.store.best}'),
+                Text('${game.sim.speed.toStringAsFixed(0)} px/s'),
+              ],
+            ),
           ),
         ),
         Expanded(
@@ -159,34 +184,41 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
                     game: game,
                     autofocus: false,
                   ),
-                  if (game.sim.crashed || game.userPaused)
-                    Center(
-                      child: Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(24),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                game.sim.crashed ? 'Fim de jogo' : 'Pausado',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineSmall,
-                              ),
-                              const SizedBox(height: 16),
-                              FilledButton(
-                                onPressed: game.sim.crashed ? restart : pause,
-                                child: Text(
-                                  game.sim.crashed
-                                      ? 'Jogar novamente'
-                                      : 'Retomar',
+                  live(
+                    (context) => !(game.sim.crashed || game.userPaused)
+                        ? const SizedBox.shrink()
+                        : Center(
+                            child: Card(
+                              child: Padding(
+                                padding: const EdgeInsets.all(24),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      game.sim.crashed
+                                          ? 'Fim de jogo'
+                                          : 'Pausado',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineSmall,
+                                    ),
+                                    const SizedBox(height: 16),
+                                    FilledButton(
+                                      onPressed: game.sim.crashed
+                                          ? restart
+                                          : pause,
+                                      child: Text(
+                                        game.sim.crashed
+                                            ? 'Jogar novamente'
+                                            : 'Retomar',
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ],
+                            ),
                           ),
-                        ),
-                      ),
-                    ),
+                  ),
                 ],
               ),
             ),
@@ -210,10 +242,12 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
           widget.classic ? 'Modo Clássico' : 'Laboratório de Controle',
         ),
         actions: [
-          IconButton(
-            onPressed: pause,
-            tooltip: game.userPaused ? 'Retomar' : 'Pausar',
-            icon: Icon(game.userPaused ? Icons.play_arrow : Icons.pause),
+          live(
+            (context) => IconButton(
+              onPressed: pause,
+              tooltip: game.userPaused ? 'Retomar' : 'Pausar',
+              icon: Icon(game.userPaused ? Icons.play_arrow : Icons.pause),
+            ),
           ),
           IconButton(
             onPressed: restart,

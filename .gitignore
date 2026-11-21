@@ -52,3 +52,8 @@ app.*.map.json
 android/key.properties
 *.jks
 *.keystore
+
+# Scratch output of local AI agents (machine-specific, may contain local paths).
+.manus/
+.omo/
+.work/

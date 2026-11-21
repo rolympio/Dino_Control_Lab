@@ -23,6 +23,19 @@ class HomePage extends StatelessWidget {
             child: ListView(
               padding: const EdgeInsets.all(24),
               children: [
+                if (store.notice case final notice?)
+                  Card(
+                    color: Theme.of(context).colorScheme.errorContainer,
+                    child: ListTile(
+                      leading: const Icon(Icons.warning_amber_outlined),
+                      title: Text(notice),
+                      trailing: IconButton(
+                        tooltip: 'Dispensar aviso',
+                        icon: const Icon(Icons.close),
+                        onPressed: store.dismissNotice,
+                      ),
+                    ),
+                  ),
                 const SizedBox(height: 32),
                 Text(
                   'Pule. Experimente. Compare.',

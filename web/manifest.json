@@ -1,12 +1,12 @@
 {
-    "name": "dino_control_lab",
-    "short_name": "dino_control_lab",
+    "name": "Dino Control Lab",
+    "short_name": "Dino Lab",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
-    "orientation": "portrait-primary",
+    "background_color": "#f6f7f3",
+    "theme_color": "#356449",
+    "description": "Jogo offline e laboratório de controle: ON/OFF, adaptativo, fuzzy e MPC.",
+    "orientation": "any",
     "prefer_related_applications": false,
     "icons": [
         {
@@ -31,5 +31,6 @@
             "type": "image/png",
             "purpose": "maskable"
         }
-    ]
+    ],
+    "lang": "pt-BR"
 }
