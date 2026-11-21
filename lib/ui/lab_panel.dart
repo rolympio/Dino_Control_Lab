@@ -121,38 +121,52 @@ class _LabPanelState extends State<LabPanel> {
                   },
                 ),
                 const SizedBox(height: 24),
-                NumberControl(
-                  label: 'Antecipação ON/OFF (s)',
-                  value: c.threshold,
-                  min: .08,
-                  max: .5,
-                  onChanged: (v) {
-                    c.threshold = v;
-                    changed();
+                Text(
+                  'Parâmetros — ${c.controller.label}',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                const SizedBox(height: 16),
+                // Only the active controller's settings: each controller
+                // reads its own parameters and ignores the others.
+                KeyedSubtree(
+                  key: ValueKey(c.controller),
+                  child: switch (c.controller) {
+                    ControllerKind.onOff => NumberControl(
+                      label: 'Antecipação ON/OFF (s)',
+                      value: c.threshold,
+                      min: .08,
+                      max: .5,
+                      onChanged: (v) {
+                        c.threshold = v;
+                        changed();
+                      },
+                    ),
+                    ControllerKind.adaptive => NumberControl(
+                      label: 'Ganho de adaptação',
+                      value: c.adaptation,
+                      min: .05,
+                      max: 1,
+                      onChanged: (v) {
+                        c.adaptation = v;
+                        changed();
+                      },
+                    ),
+                    ControllerKind.fuzzy => FuzzyEditor(
+                      config: c,
+                      onChanged: changed,
+                    ),
+                    ControllerKind.mpc => NumberControl(
+                      label: 'Horizonte MPC (s)',
+                      value: c.horizon,
+                      min: .6,
+                      max: 2,
+                      onChanged: (v) {
+                        c.horizon = v;
+                        changed();
+                      },
+                    ),
                   },
                 ),
-                NumberControl(
-                  label: 'Ganho de adaptação',
-                  value: c.adaptation,
-                  min: .05,
-                  max: 1,
-                  onChanged: (v) {
-                    c.adaptation = v;
-                    changed();
-                  },
-                ),
-                NumberControl(
-                  label: 'Horizonte MPC (s)',
-                  value: c.horizon,
-                  min: .6,
-                  max: 2,
-                  onChanged: (v) {
-                    c.horizon = v;
-                    changed();
-                  },
-                ),
-                const SizedBox(height: 24),
-                FuzzyEditor(config: c, onChanged: changed),
                 const SizedBox(height: 32),
                 Text(
                   'Personagem e física ao vivo',
@@ -184,7 +198,8 @@ class _LabPanelState extends State<LabPanel> {
           ),
         ),
         const Text(
-          'Cada execução usa a mesma semente e termina na colisão ou em 60 segundos simulados.',
+          'Cada execução usa a mesma semente e termina na colisão ou em 60 segundos simulados. '
+          'Controladores não selecionados usam os últimos parâmetros ajustados neles.',
         ),
       ],
     );
