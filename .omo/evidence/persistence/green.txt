@@ -1,0 +1,17 @@
+00:00 +0: loading D:/Repos/Dino_Control_Lab/test/persistence_test.dart
+00:00 +0: D:/Repos/Dino_Control_Lab/test/persistence_test.dart: History, record and experiments survive reopening storage
+00:00 +1: D:/Repos/Dino_Control_Lab/test/persistence_test.dart: JSON replay reproduces actions and live physics changes exactly
+00:00 +2: D:/Repos/Dino_Control_Lab/test/persistence_recovery_test.dart: corrupt preferences recover without losing valid experiments
+00:00 +3: D:/Repos/Dino_Control_Lab/test/persistence_recovery_test.dart: bad record is skipped while neighboring session survives
+00:00 +4: D:/Repos/Dino_Control_Lab/test/persistence_recovery_test.dart: unknown schema is rejected at input boundary
+00:00 +5: D:/Repos/Dino_Control_Lab/test/persistence_write_test.dart: setString false gives notice and retains exportable session
+00:00 +6: D:/Repos/Dino_Control_Lab/test/persistence_write_test.dart: setString exception gives notice and retains exportable session
+00:00 +7: D:/Repos/Dino_Control_Lab/test/persistence_write_test.dart: setInt false gives notice and retains exportable session
+00:00 +8: D:/Repos/Dino_Control_Lab/test/persistence_write_test.dart: setInt exception gives notice and retains exportable session
+00:00 +9: D:/Repos/Dino_Control_Lab/test/persistence_write_test.dart: setBool false gives notice and retains exportable session
+00:00 +10: D:/Repos/Dino_Control_Lab/test/persistence_write_test.dart: setBool exception gives notice and retains exportable session
+00:00 +11: D:/Repos/Dino_Control_Lab/test/persistence_write_test.dart: unawaited save failure is reported through listeners
+00:00 +12: D:/Repos/Dino_Control_Lab/test/persistence_write_test.dart: history retains newest 20 records across reopen
+00:00 +13: D:/Repos/Dino_Control_Lab/test/persistence_write_test.dart: oversized current session remains exportable while disk stays bounded
+00:00 +14: D:/Repos/Dino_Control_Lab/test/persistence_write_test.dart: queued saves preserve newer settings when first write is delayed
+00:00 +15: All tests passed!

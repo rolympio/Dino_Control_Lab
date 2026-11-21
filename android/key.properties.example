@@ -1,0 +1,5 @@
+# Copy to key.properties locally and fill with your private signing credentials.
+storeFile=D:/private/dino-release.jks
+storePassword=
+keyAlias=
+keyPassword=

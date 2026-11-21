@@ -1,0 +1,3 @@
+# Generated locally by tool/bootstrap.ps1; do not commit local.properties.
+flutter.sdk=D:/toolchains/flutter
+sdk.dir=D:/toolchains/android

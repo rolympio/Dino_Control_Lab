@@ -1,0 +1,42 @@
+[
+  {
+    "controller": "onOff",
+    "seed": 42,
+    "duration_s": 60.0,
+    "score": 2249,
+    "jumps": 25,
+    "outcome": "limite de tempo",
+    "runtime_ms": 17,
+    "replay": "identical"
+  },
+  {
+    "controller": "adaptive",
+    "seed": 42,
+    "duration_s": 60.0,
+    "score": 2249,
+    "jumps": 25,
+    "outcome": "limite de tempo",
+    "runtime_ms": 2,
+    "replay": "identical"
+  },
+  {
+    "controller": "fuzzy",
+    "seed": 42,
+    "duration_s": 60.0,
+    "score": 2249,
+    "jumps": 25,
+    "outcome": "limite de tempo",
+    "runtime_ms": 6,
+    "replay": "identical"
+  },
+  {
+    "controller": "mpc",
+    "seed": 42,
+    "duration_s": 60.0,
+    "score": 2249,
+    "jumps": 28,
+    "outcome": "limite de tempo",
+    "runtime_ms": 18,
+    "replay": "identical"
+  }
+]

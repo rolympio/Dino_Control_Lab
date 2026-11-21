@@ -1,0 +1,33 @@
+00:00 +0: loading D:/Repos/Dino_Control_Lab/test/persistence_recovery_test.dart
+00:00 +0: corrupt preferences recover without losing valid experiments
+00:00 +0 -1: corrupt preferences recover without losing valid experiments [E]
+  Invalid argument (name): No enum value with that name: "unknown"
+  dart:core                                       EnumByName.byName
+  package:dino_control_lab/data/store.dart 13:30  new AppStore
+  test\persistence_recovery_test.dart 14:19       main.<fn>
+  
+00:00 +0 -1: bad record is skipped while neighboring session survives
+00:00 +0 -2: bad record is skipped while neighboring session survives [E]
+  type 'Null' is not a subtype of type 'Map<String, dynamic>' in type cast
+  package:dino_control_lab/data/session.dart 21:39  new Session.fromJson
+  package:dino_control_lab/data/store.dart 18:26    new AppStore.<fn>
+  dart:core                                         List.addAll
+  package:dino_control_lab/data/store.dart 16:16    new AppStore
+  test\persistence_recovery_test.dart 21:19         main.<fn>
+  
+00:00 +0 -2: unknown schema is rejected at input boundary
+00:00 +0 -3: unknown schema is rejected at input boundary [E]
+  Expected: throws <Instance of 'FormatException'>
+    Actual: <Closure: () => Session>
+     Which: returned <Instance of 'Session'>
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\persistence_recovery_test.dart 26:5            main.<fn>
+  
+00:00 +0 -3: Some tests failed.
+
+Failing tests:
+  D:/Repos/Dino_Control_Lab/test/persistence_recovery_test.dart: bad record is skipped while neighboring session survives
+  D:/Repos/Dino_Control_Lab/test/persistence_recovery_test.dart: corrupt preferences recover without losing valid experiments
+  D:/Repos/Dino_Control_Lab/test/persistence_recovery_test.dart: unknown schema is rejected at input boundary
