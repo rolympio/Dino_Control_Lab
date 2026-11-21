@@ -17,7 +17,20 @@ Windows precisa de Visual Studio com C++ desktop e suporte a links simbólicos (
 
 O projeto usa `kotlin.incremental=false` em `android/gradle.properties`: nesta instalação Windows, Kotlin 2.4.20 falhou ao fechar caches incrementais de quatro plugins. A opção realiza a compilação Kotlin sem esses caches; não altera o comportamento do aplicativo. Referência: https://kotlinlang.org/docs/gradle-compilation-and-caches.html#incremental-compilation.
 
-Para inspecionar a versão web de desenvolvimento, `flutter run -d chrome`. Para um bundle web sem buscar CanvasKit em CDN: `flutter build web --no-web-resources-cdn`. Nenhuma hospedagem foi publicada.
+## Web
+
+Desenvolvimento: `flutter run -d chrome`, ou `flutter run -d edge` quando só o Edge estiver instalado.
+
+O bundle de `flutter build web` **precisa de HTTP**. Aberto por `file://`, ou servido num caminho diferente do `--base-href` usado no build, o navegador mostra tela branca. Para testar localmente:
+
+```powershell
+powershell -File tool/build-web.ps1 -BaseHref /
+powershell -File tool/serve-web.ps1        # http://127.0.0.1:8080/
+```
+
+Publicação: `.github/workflows/pages.yml` roda os testes e publica no GitHub Pages a cada push na `main`, com `--base-href /<repositório>/`. Isso exige ativar uma vez, em *Settings → Pages → Build and deployment → Source*, a opção **GitHub Actions**. Endereço: `https://rolympio.github.io/Dino_Control_Lab/`.
+
+`.github/workflows/ci.yml` roda `flutter analyze` e `flutter test` em todo push e pull request.
 
 ## iOS em macOS
 

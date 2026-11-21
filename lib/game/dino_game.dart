@@ -91,10 +91,11 @@ class DinoGame extends FlameGame {
   void render(Canvas canvas) {
     super.render(canvas);
     if (size.x == 0 || size.y == 0) return;
-    final scale = size.x / 1000;
     canvas.save();
-    // Keep the full obstacle preview on phones; preserve aspect ratio.
-    final factor = math.max(scale, .45);
+    // Obstacles spawn at x = 1000, so the whole 1000 px world width must fit
+    // or narrow phones lose part of the preview. Also keep ~220 px of height
+    // (ground margin + highest jump) visible in short, wide windows.
+    final factor = math.min(size.x / 1000, size.y / 220);
     canvas.scale(factor);
     final ground = size.y / factor - 30;
     final paint = Paint()..color = ink;
