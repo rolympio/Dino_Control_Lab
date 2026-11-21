@@ -26,6 +26,18 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
   late Timer ticker;
   String? audioError;
 
+  static const speeds = [.25, .5, 1.0, 2.0, 4.0, 8.0];
+  int speedIndex = speeds.indexOf(1);
+  double get timeScale => speeds[speedIndex];
+
+  void setSpeed(int index) => setState(() {
+    speedIndex = index.clamp(0, speeds.length - 1);
+    game.timeScale = timeScale;
+  });
+
+  String get speedLabel =>
+      '${timeScale < 1 ? timeScale.toString().replaceFirst('0.', '0,') : timeScale.toStringAsFixed(0)}×';
+
   /// Bumped only when something the HUD shows has changed, so the ticker
   /// does not rebuild the whole page (lab panel included) ten times a second.
   final hud = ValueNotifier<int>(0);
@@ -69,7 +81,7 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
       onSound: (name) {
         if (widget.store.sound) unawaited(playSound(name));
       },
-    );
+    )..timeScale = widget.classic ? 1 : timeScale;
   }
 
   Future<void> playSound(String name) async {
@@ -227,11 +239,48 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
         if (widget.classic) TouchControls(game: game, focus: focus),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Text(
-            widget.classic
-                ? 'Toque / Espaço / ↑: pular · ↓: abaixar · P: pausa'
-                : '${widget.store.config.controller.label} · semente ${game.sim.config.seed}',
-          ),
+          child: widget.classic
+              ? const Text('Toque / Espaço / ↑: pular · ↓: abaixar · P: pausa')
+              : Wrap(
+                  alignment: WrapAlignment.center,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 16,
+                  children: [
+                    Text(
+                      '${widget.store.config.controller.label} · semente ${game.sim.config.seed}',
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          tooltip: 'Desacelerar',
+                          onPressed: speedIndex > 0
+                              ? () => setSpeed(speedIndex - 1)
+                              : null,
+                          icon: const Icon(Icons.chevron_left),
+                        ),
+                        TextButton(
+                          key: const Key('speed-normal'),
+                          onPressed: timeScale == 1
+                              ? null
+                              : () => setSpeed(speeds.indexOf(1)),
+                          child: Text(
+                            timeScale == 1
+                                ? '1× normal'
+                                : '$speedLabel · voltar a 1×',
+                          ),
+                        ),
+                        IconButton(
+                          tooltip: 'Acelerar',
+                          onPressed: speedIndex < speeds.length - 1
+                              ? () => setSpeed(speedIndex + 1)
+                              : null,
+                          icon: const Icon(Icons.chevron_right),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
         ),
         if (audioError != null) Text(audioError!),
       ],

@@ -28,6 +28,10 @@ class DinoGame extends FlameGame {
       pendingJump = false,
       finished = false;
   double accumulator = 0;
+
+  /// Playback speed of the fixed-step simulation. Only how many steps run
+  /// per frame changes, so results are identical at any speed.
+  double timeScale = 1;
   Color ink = const Color(0xff202820);
   Color paper = const Color(0xfff6f7f3);
   void jump() {
@@ -64,7 +68,7 @@ class DinoGame extends FlameGame {
   void update(double dt) {
     super.update(dt);
     if (userPaused || sim.crashed || finished) return;
-    accumulator += math.min(dt, .1);
+    accumulator += math.min(dt, .1) * timeScale;
     while (accumulator >= Simulation.step) {
       final move = classic
           ? (pendingJump
