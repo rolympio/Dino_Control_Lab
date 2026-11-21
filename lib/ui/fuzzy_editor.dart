@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+
 import 'package:flutter/gestures.dart' show DragStartBehavior;
 
 import 'package:material_ui/material_ui.dart';
@@ -37,17 +38,7 @@ class _FuzzyEditorState extends State<FuzzyEditor> {
         initialValue: widget.config.shape,
         decoration: const InputDecoration(labelText: 'Função fuzzy de entrada'),
         items: MembershipShape.values
-            .map(
-              (s) => DropdownMenuItem(
-                value: s,
-                child: Text(switch (s) {
-                  MembershipShape.triangular => 'Triangular',
-                  MembershipShape.trapezoidal => 'Trapezoidal',
-                  MembershipShape.gaussian => 'Gaussiana',
-                  MembershipShape.sigmoid => 'Sigmoidal',
-                }),
-              ),
-            )
+            .map((s) => DropdownMenuItem(value: s, child: Text(s.label)))
             .toList(),
         onChanged: (s) {
           if (s != null) {
