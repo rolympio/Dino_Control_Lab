@@ -73,6 +73,7 @@ class _ResultsPageState extends State<ResultsPage> {
                         DataColumn(label: Text('Tempo (s)')),
                         DataColumn(label: Text('Pulos')),
                         DataColumn(label: Text('Fim')),
+                        DataColumn(label: Text('Parâmetros iniciais')),
                       ],
                       rows: sessions
                           .map(
@@ -93,6 +94,13 @@ class _ResultsPageState extends State<ResultsPage> {
                                 DataCell(Text(s.duration.toStringAsFixed(2))),
                                 DataCell(Text('${s.jumps}')),
                                 DataCell(Text(s.outcome)),
+                                DataCell(
+                                  Text(
+                                    s.classic
+                                        ? '—'
+                                        : s.initial.controllerParameters,
+                                  ),
+                                ),
                               ],
                             ),
                           )

@@ -17,6 +17,15 @@ extension ControllerLabel on ControllerKind {
   };
 }
 
+extension MembershipLabel on MembershipShape {
+  String get label => switch (this) {
+    MembershipShape.triangular => 'Triangular',
+    MembershipShape.trapezoidal => 'Trapezoidal',
+    MembershipShape.gaussian => 'Gaussiana',
+    MembershipShape.sigmoid => 'Sigmoidal',
+  };
+}
+
 class Physics {
   const Physics({
     this.mass = 1,
@@ -64,6 +73,19 @@ class LabConfig {
   double threshold, adaptation, center, width, horizon;
   double runCenter, jumpCenter, outputWidth;
   MembershipShape shape;
+
+  /// The parameters the selected controller actually reads, in display form.
+  String get controllerParameters => switch (controller) {
+    ControllerKind.onOff => 'antecipação ${threshold.toStringAsFixed(2)} s',
+    ControllerKind.adaptive => 'ganho ${adaptation.toStringAsFixed(2)}',
+    ControllerKind.fuzzy =>
+      '${shape.label} centro ${center.toStringAsFixed(2)} s, '
+          'largura ${width.toStringAsFixed(2)} s; '
+          'saídas correr ${runCenter.toStringAsFixed(2)} / '
+          'pular ${jumpCenter.toStringAsFixed(2)} '
+          '± ${outputWidth.toStringAsFixed(2)}',
+    ControllerKind.mpc => 'horizonte ${horizon.toStringAsFixed(2)} s',
+  };
   LabConfig copy() => LabConfig.fromJson(toJson());
   Map<String, dynamic> toJson() => {
     'seed': seed,
